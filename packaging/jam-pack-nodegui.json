@@ -1,12 +1,13 @@
 {
     "fetch": {
+      "skip": true,
       "gitFromCwd": true
     },
     "build": {
       "packageManager": "npm"
     },
     "prune": {
-      "skip": false,
+      "skip": true,
       "patterns": [
         {
           "keep": [
@@ -33,7 +34,7 @@
       "controlFields": {
         "Depends": "libx11-6",
         "Section": "x11",
-        "Maintainer": "Someone",
+        "Maintainer": "OpCode",
         "Priority": "optional",
         "Description": "A NodeGui application"
       },
@@ -62,8 +63,8 @@
     "dmg" : {
       "applicationIcon": "$pruneStep_trashDirectory/packaging/macos/nodeguiapp.icns",
       "applicationTitle": "nodeguiapp",
-      "nsHumanReadableCopyright": "Copyright 2023 Someone",
-      "cfBundleIdentifier": "com.someapp.someapp",
+      "nsHumanReadableCopyright": "Copyright 2023 OpCode",
+      "cfBundleIdentifier": "com.opcodeindustries.typegui",
       "prePack": [
         "mv $dmgStep_dmgResourcesDirectory/nodeguiapp $dmgStep_dmgMacOSDirectory/"
       ]
