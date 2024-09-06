@@ -1,6 +1,5 @@
 # NodeGUI Cross Platform Application Template
-This template is a cross platform application built on NodeGui in Typescript
-
+This template is a basic cross platform application built on NodeGui in Typescript
 
 ## Installation
 ```
