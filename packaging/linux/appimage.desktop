@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=NodeGUI Cross Platform Application
+Exec=/opt/nodegui-cross-platform-application/nodegui-cross-platform-application
+Terminal=false
+Type=Application
+Comment=A NodeGui Cross Platform Application
+Categories=System;X-GNOME-Utilities;
+Icon=app

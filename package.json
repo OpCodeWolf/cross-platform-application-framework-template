@@ -1,6 +1,6 @@
 {
-  "name": "typegui",
-  "version": "1.0.0",
+  "name": "nodegui-cross-platform-application-template",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,10 +9,12 @@
     "build-bundle": "esbuild build/main.js --sourcemap --bundle --outfile=dist/main.cjs --platform=node --format=cjs --external:@nodegui/nodegui \"--external:nodegui-plugin-*\"",
     "clean": "rimraf build dist tmp-jam-pack-nodegui",
     "package": "jam-pack-nodegui --config packaging/jam-pack-nodegui.json",
-    "run": "qode dist/main.cjs"
+    "run": "qode dist/main.cjs",
+    "dev": "npm run build && npm run run",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "OpCodeWolf",
+  "license": "GPL-3.0-only+",
   "dependencies": {
     "@nodegui/nodegui": "^0.67.0",
     "@types/node": "^22.5.0",

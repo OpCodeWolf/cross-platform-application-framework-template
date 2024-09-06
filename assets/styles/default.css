@@ -1,0 +1,31 @@
+* {
+	font-family: sans-serif;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+
+	margin: 0;
+
+	text-align: left;
+
+	color: #ffffff;
+	background-color: #333333;
+}
+
+#centralWidget {
+	height: '100%';
+	align-items: 'center';
+	justify-content: 'center';
+}
+
+#label1 {
+	font-size: 24px;
+	font-weight: bold;
+	padding: 1;
+}
+
+#label2 {
+	font-size: 18px;
+	font-weight: bold;
+	padding: 1;
+}
