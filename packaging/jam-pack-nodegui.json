@@ -7,7 +7,7 @@
       "packageManager": "npm"
     },
     "prune": {
-      "skip": true,
+      "skip": false,
       "patterns": [
         {
           "keep": [
@@ -43,30 +43,31 @@
         "cd $debianStep_debianSourceDirectory && cp $pruneStep_trashDirectory/packaging/linux/nodeguiapp.desktop usr/share/applications/",
   
         "cd $debianStep_debianSourceDirectory && mkdir -p usr/share/icons",
+        "echo $pruneStep_trashDirectory",
         "cd $debianStep_debianSourceDirectory && cp -r $pruneStep_trashDirectory/packaging/linux/icons/hicolor usr/share/icons/"
       ]
     },
     "appImage": {
       "prePack": [
-        "cp $pruneStep_trashDirectory/packaging/linux/nodeguiapp_appimage.desktop $appImageStep_appImageSourceDirectory",
-        "cp $pruneStep_trashDirectory/packaging/linux/icons/hicolor/32x32/apps/nodeguiapp.png $appImageStep_appImageSourceDirectory"
+        "cp $pruneStep_trashDirectory/packaging/linux/appimage.desktop $appImageStep_appImageSourceDirectory",
+        "cp $pruneStep_trashDirectory/packaging/linux/icons/hicolor/32x32/apps/app.png $appImageStep_appImageSourceDirectory"
       ]
     },
     "nsis": {
       "skip": false,
-      "description": "A NodeGui application",
+      "description": "A NodeGui Cross Platform Application",
       "detailColors": "3db54a 000000",
-      "appTitle": "nodeguiapp",
-      "installerIcon": "$pruneStep_trashDirectory/packaging/windows/nodeguiapp.ico",
-      "uninstallerIcon": "$pruneStep_trashDirectory/packaging/windows/nodeguiapp.ico"
+      "appTitle": "NodeGui Cross Platform Application",
+      "installerIcon": "$pruneStep_trashDirectory/packaging/windows/app.ico",
+      "uninstallerIcon": "$pruneStep_trashDirectory/packaging/windows/app.ico"
     },
     "dmg" : {
-      "applicationIcon": "$pruneStep_trashDirectory/packaging/macos/nodeguiapp.icns",
-      "applicationTitle": "nodeguiapp",
-      "nsHumanReadableCopyright": "Copyright 2023 OpCode",
-      "cfBundleIdentifier": "com.opcodeindustries.typegui",
+      "applicationIcon": "$pruneStep_trashDirectory/packaging/macos/app.icns",
+      "applicationTitle": "NodeGui Cross Platform Application",
+      "nsHumanReadableCopyright": "GPL 3.0+ Licensed by OpCodeIndustries",
+      "cfBundleIdentifier": "com.opcodeindustries.app",
       "prePack": [
-        "mv $dmgStep_dmgResourcesDirectory/nodeguiapp $dmgStep_dmgMacOSDirectory/"
+        "mv $dmgStep_dmgResourcesDirectory/app $dmgStep_dmgMacOSDirectory/"
       ]
     }
   

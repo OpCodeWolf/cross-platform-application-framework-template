@@ -2,3 +2,5 @@ build/
 dist/
 node_modules/
 tmp-jam-pack-nodegui/
+archive
+config.json
