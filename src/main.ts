@@ -21,12 +21,26 @@
 //////////////////////////////
 
 import fs from 'node:fs';
-import { QMainWindow, QWidget, QMenu, QLabel, QPushButton, QIcon, QBoxLayout, Direction, QSize, QSystemTrayIcon, QAction, QApplication, QKeySequence, WidgetEventTypes } from '@nodegui/nodegui';
+import { 
+    QMainWindow, 
+    QWidget, 
+    QMenu, 
+    QLabel, 
+    QPushButton, 
+    QIcon, 
+    QBoxLayout, 
+    Direction, 
+    QSystemTrayIcon, 
+    QAction, 
+    QApplication, 
+    QKeySequence, 
+    WidgetEventTypes
+} from '@nodegui/nodegui';
 import * as path from 'node:path';
 import sourceMapSupport from 'source-map-support';
 import { Resources } from './lib/Resources';
 import { Config } from "./lib/Config";
-// import { ButtonDialog } from './lib/dialogs';
+import { ModalDialogExample } from './lib/dialogs';
 
 sourceMapSupport.install();
 
@@ -48,7 +62,7 @@ class App {
     public mainButtonIcon = '../assets/logox200.png';
 
     constructor() {
-    }    
+    }
 
     /**
      * Initializes application resources such as styles and icons.
@@ -113,12 +127,24 @@ class App {
     // TODO: Move to AppTray class
     public initTrayMenu = () => {
         this.initTrayIcon();
-           
+
         // ----------------
         // About Menu Item
         // ----------------
         // this.addTrayMenuItem('About', '', '', () => {
         //     const aboutDialog = new ButtonDialog('About');
+        // });
+
+        // ----------------
+        // Modal Dialog Item
+        // ----------------
+        this.addTrayMenuItem('Dialog Example', '', '', () => {
+            const dialog = new ModalDialogExample();
+        });
+
+ 
+        // this.addTrayMenuItem('Button Dialog Example', '', '', () => {
+        //     const dialog = new ButtonDialogExample();
         // });
 
         // TODO: Not sure if we need this on macs, please test this
@@ -176,7 +202,6 @@ class App {
         this.config.setSetting('pos-y', this.win.y());
         this.config.setSetting('width', this.win.width());
         this.config.setSetting('height', this.win.height());
-
     }
 
     /**
@@ -184,14 +209,14 @@ class App {
      * The window is centered on the screen and configured with a minimum size.
      * Additionally, it sets up event listeners for window-related events and handles application exit.
      */
-    // TODO: Cleanup as Views, add to view/MainWindow.ts
+    // TODO: Cleanup as Views, add to view/MainWindow.ts #25
     public initMainWindow = () => {
-        // By default get the OS screen size and resize app accordingly. configuration will override this.
+        // By default get the OS screen size and resize app accordingly. Configuration will override this.
         const screen = QApplication.screens()[0];
         const screensize = screen.size();
 
         // Set window size 2/3 of screensize
-        this.win.resize(screensize.width() - (screensize.width()/3), 600);
+        this.win.resize(screensize.width() - (screensize.width() / 3), 600);
 
         // Center window on screen
         this.win.move(
@@ -216,11 +241,11 @@ class App {
         // })
 
         // Window Events
-        this.win.addEventListener(WidgetEventTypes.Close, () => {});
-        this.win.addEventListener(WidgetEventTypes.Hide, () => {});
-        this.win.addEventListener(WidgetEventTypes.Show, () => {});
-        this.win.addEventListener(WidgetEventTypes.Resize, () => {});
-        this.win.addEventListener(WidgetEventTypes.Move, () => {});
+        this.win.addEventListener(WidgetEventTypes.Close, () => { });
+        this.win.addEventListener(WidgetEventTypes.Hide, () => { });
+        this.win.addEventListener(WidgetEventTypes.Show, () => { });
+        this.win.addEventListener(WidgetEventTypes.Resize, () => { });
+        this.win.addEventListener(WidgetEventTypes.Move, () => { });
     }
 
     /**
@@ -228,7 +253,7 @@ class App {
      * configuring layout elements such as labels and buttons, and assigning them to the window's layout.
      * This method arranges widgets and sets the central widget for the main window.
      */
-    // TODO: Cleanup as Views, add to view/MainWindow.ts
+    // TODO: Cleanup as Views, add to view/MainWindow.ts #25
     public initMainWindowLayout = () => {
         const mainMenu = new QMenu();
 
@@ -261,10 +286,10 @@ class App {
      * This includes setting the application version, configuring the behavior when closing windows,
      * restoring the window's position and size to their previous states, and displaying the main window.
      */
-    // TODO: Cleanup by calling and setting up the available Views
+    // TODO: Cleanup by calling and setting up the available Views #25
     public initSettings = () => {
         this.version = this.config.getSetting('app-version');
-               
+
         // BUG: Fix this (Essentially this is to keep the systray icon in the systray when all windows are closed)
         // False = app doesnt close if we close all windows
         // True = app will close if we close all windows
@@ -286,7 +311,7 @@ class App {
             <number>Number(this.config.getSetting('width')),
             <number>Number(this.config.getSetting('height'))
         );
-        
+
         // Show the main window
         this.win.show();
     }
@@ -307,7 +332,6 @@ class App {
     }
 }
 
-// TODO: Cleanup and process CLI options with a CLI class (possibly 3rd party, why reinvent the wheel)
 // Main Application Start
 const app = new App();
 app.run();
