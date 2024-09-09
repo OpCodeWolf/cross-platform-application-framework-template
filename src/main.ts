@@ -34,7 +34,8 @@ import {
     QAction, 
     QApplication, 
     QKeySequence, 
-    WidgetEventTypes
+    WidgetEventTypes,
+    QMenuBar
 } from '@nodegui/nodegui';
 import * as path from 'node:path';
 import sourceMapSupport from 'source-map-support';
@@ -50,6 +51,7 @@ class App {
     public win: QMainWindow = new QMainWindow();
     public centralWidget: QWidget = new QWidget();
     public rootLayout: QBoxLayout = new QBoxLayout(Direction.TopToBottom);
+    public menuBar = new QMenuBar();
     public mainMenu = new QMenu();
     public trayMenu = new QMenu();
     public tray = new QSystemTrayIcon();
@@ -230,6 +232,7 @@ class App {
         this.win.setMinimumSize(300, 150);
 
         this.initMainWindowLayout();
+        this.initMainMenu();
 
         this.appInstance.addEventListener('lastWindowClosed', () => {
             this.onAppExit();
@@ -248,6 +251,34 @@ class App {
         this.win.addEventListener(WidgetEventTypes.Move, () => { });
     }
 
+    public initMainMenu() {
+        // File Menu
+        const fileMenu = new QMenu();
+        fileMenu.setTitle('File');
+
+        fileMenu.addSeparator(); // Add a separator between actions
+
+        const quitAction = new QAction();
+        quitAction.setText('Quit');
+        quitAction.addEventListener('triggered', () => this.appInstance.exit(0));
+        fileMenu.addAction(quitAction);
+
+        // Help menu
+        const helpMenu = new QMenu();
+        helpMenu.setTitle('Help');
+
+        const aboutAction = new QAction();
+        aboutAction.setText('About');
+        aboutAction.addEventListener('triggered', () => new AboutDialogExample());
+        helpMenu.addAction(aboutAction);
+        
+        // Add menus to menubar
+        this.menuBar.addMenu(fileMenu);
+        this.menuBar.addMenu(helpMenu);        
+
+        this.win.setMenuBar(this.menuBar);
+    }
+
     /**
      * Initializes the layout of the main application window by setting up the central widget, 
      * configuring layout elements such as labels and buttons, and assigning them to the window's layout.
@@ -255,7 +286,6 @@ class App {
      */
     // TODO: Cleanup as Views, add to view/MainWindow.ts #25
     public initMainWindowLayout = () => {
-        const mainMenu = new QMenu();
 
         this.centralWidget.setObjectName("centralWidget");
         this.centralWidget.setLayout(this.rootLayout);
@@ -271,6 +301,7 @@ class App {
         label.setObjectName('label2');
         label2.setText('<put something here>');
 
+       
         // Build the root widget
         this.rootLayout.addWidget(label);
         this.rootLayout.addWidget(label2);
