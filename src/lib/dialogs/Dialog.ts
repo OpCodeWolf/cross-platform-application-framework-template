@@ -36,7 +36,7 @@ export class Dialog extends QWidget {
 
     public setOptions(options?: DialogOptionsInterface) {
         // Set the dialogs title text
-        if (options.title !== undefined) {
+        if (options.title !== undefined && options.title !== null) {
             this.setWindowTitle(options.title);
         } else {
             this.setWindowTitle('Example Dialog Title');
@@ -75,10 +75,10 @@ export class Dialog extends QWidget {
 
         // Replace special characters in title that could break CSS to dashes and convert title to lowercase
         const filteredTitle: string = options.title
-            .replaceAll('/([\s~`!@#$%^&*()_+\-={[}\]|\\:;"\'<,>.?/])/g', '-').toLowerCase()
+            .replaceAll('/([\s~`!@#$%^&*()_+\-={[}\]|\\:;"\'<,>.?/])/g', '-').toLowerCase();
 
         // Set the id of the dialog for themes
-        this.setProperty('id', `dialog-${filteredTitle}`)
+        this.setProperty('id', `dialog-${filteredTitle}`);
         
         // Loop through each element described in options.elements
         options.elements.forEach((element: any) => {
@@ -111,7 +111,7 @@ export class Dialog extends QWidget {
                 } catch(error) {
                     console.error(error);
                 }
-            })
+            });
         }
     }
 
@@ -143,7 +143,7 @@ export class Dialog extends QWidget {
         // Connect button's clicked signal to the preset event handler
         dlgButton.addEventListener('clicked', () => {
             try {
-                onClick(button.value, this, dlgButton)
+                onClick(button.value, this, dlgButton);
             } catch(error) {
                 console.error(error);
             }
