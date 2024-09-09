@@ -41,6 +41,7 @@ import sourceMapSupport from 'source-map-support';
 import { Resources } from './lib/Resources';
 import { Config } from "./lib/Config";
 import { ButtonDialogExample, ModalDialogExample } from './lib/dialogs';
+import { AboutDialogExample } from './lib/dialogs/AboutDialogExample';
 
 sourceMapSupport.install();
 
@@ -131,19 +132,19 @@ class App {
         // ----------------
         // About Menu Item
         // ----------------
-        // this.addTrayMenuItem('About', '', '', () => {
-        //     const aboutDialog = new ButtonDialog('About');
-        // });
+        this.addTrayMenuItem('About', '', '', () => {
+            new AboutDialogExample();
+        });
 
         // ----------------
-        // Modal Dialog Item
+        // Modal Dialog Examples
         // ----------------
         this.addTrayMenuItem('Dialog Example', '', '', () => {
-            const dialog = new ModalDialogExample();
+            new ModalDialogExample();
         });
  
         this.addTrayMenuItem('Button Dialog Example', '', '', () => {
-            const dialog = new ButtonDialogExample();
+            new ButtonDialogExample();
         });
 
         // TODO: Not sure if we need this on macs, please test this
