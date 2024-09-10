@@ -43,21 +43,18 @@ import { Resources } from './lib/Resources';
 import { Config } from "./lib/Config";
 import { ButtonDialogExample, ModalDialogExample } from './lib/dialogs';
 import { AboutDialogExample } from './lib/dialogs/AboutDialogExample';
+import { MainWindow } from './views/MainWindows';
 
 sourceMapSupport.install();
 
 class App {
     public appInstance: QApplication = QApplication.instance();
-    public win: QMainWindow = new QMainWindow();
-    public centralWidget: QWidget = new QWidget();
-    public rootLayout: QBoxLayout = new QBoxLayout(Direction.TopToBottom);
-    public menuBar = new QMenuBar();
-    public mainMenu = new QMenu();
     public trayMenu = new QMenu();
     public tray = new QSystemTrayIcon();
     public resources: Resources = new Resources();
     public config: Config = new Config();
     public version: string;
+    public mainWindow: MainWindow;
 
     // Icons
     public trayIconPath = '../assets/systray-icon.png';
@@ -65,6 +62,28 @@ class App {
     public mainButtonIcon = '../assets/logox200.png';
 
     constructor() {
+        // Initialize resources for the application
+        this.initResources();
+
+        this.mainWindow = new MainWindow(this.resources, this.config);
+
+        // Initialize event listeners for the application
+        this.initEventListeners();
+
+        // Apply settings to the application and show the main window
+        this.initSettings();
+        this.mainWindow.show();
+    }
+
+    public initEventListeners = () => {
+        this.appInstance.addEventListener('lastWindowClosed', () => {
+            this.onAppExit();
+        });
+
+        // TODO: Implement Hotkeys
+        // this.win.addEventListener(WidgetEventTypes.KeyRelease, (event) => {
+        //     const keyReleaseEvent = new QKeySequence(event.key);
+        // })
     }
 
     /**
@@ -73,16 +92,12 @@ class App {
      */
     public initResources = () => {
 
-        // Setup styles
-        this.resources.setStyle('default', fs.readFileSync(path.resolve(__dirname, '../assets/styles/default.css'), 'utf8'));
-
         // Load icons
         this.resources.setIcon('trayIcon', new QIcon(path.resolve(__dirname, this.trayIconPath)));
         this.resources.setIcon('appIcon', new QIcon(path.resolve(__dirname, this.appIconPath)));
         this.resources.setIcon('mainButtonIcon', new QIcon(path.resolve(__dirname, this.mainButtonIcon)));
-
-        // Load configured style
-        this.win.setStyleSheet(this.resources.getStyle(this.config.getSetting('style')));
+        // Load styles
+        this.resources.setStyle('default', fs.readFileSync(path.resolve(__dirname, '../assets/styles/default.css'), 'utf8'));
     }
 
     /**
@@ -178,10 +193,10 @@ class App {
         // Hide Menu Item
         // ----------------
         this.addTrayMenuItem('Hide/Show', '', 'Alt+H', () => {
-            if (this.win.isVisible()) {
-                this.win.hide();
+            if (this.mainWindow.isVisible()) {
+                this.mainWindow.hide();
             } else {
-                this.win.show();
+                this.mainWindow.show();
             }
         });
 
@@ -200,124 +215,18 @@ class App {
      */
     public onAppExit() {
         // Save application state
-        this.config.setSetting('pos-x', this.win.x());
-        this.config.setSetting('pos-y', this.win.y());
-        this.config.setSetting('width', this.win.width());
-        this.config.setSetting('height', this.win.height());
+        this.config.setSetting('pos-x', this.mainWindow.view.x());
+        this.config.setSetting('pos-y', this.mainWindow.view.y());
+        this.config.setSetting('width', this.mainWindow.view.width());
+        this.config.setSetting('height', this.mainWindow.view.height());
     }
 
-    /**
-     * Initializes the main application window by setting its size, position, icon, title, and various event handlers.
-     * The window is centered on the screen and configured with a minimum size.
-     * Additionally, it sets up event listeners for window-related events and handles application exit.
-     */
-    // TODO: Cleanup as Views, add to view/MainWindow.ts #25
-    public initMainWindow = () => {
-        // By default get the OS screen size and resize app accordingly. Configuration will override this.
-        const screen = QApplication.screens()[0];
-        const screensize = screen.size();
-
-        // Set window size 2/3 of screensize
-        this.win.resize(screensize.width() - (screensize.width() / 3), 600);
-
-        // Center window on screen
-        this.win.move(
-            screensize.width() / 2 - (this.win.size().width() / 2),
-            screensize.height() / 2 - (this.win.size().height() / 2)
-        );
-
-        this.win.setWindowIcon(this.resources.getIcon('appIcon'));
-        this.win.setWindowTitle("NodeGui Cross Platform Application");
-        this.win.setAcceptDrops(true);
-        this.win.setMinimumSize(300, 150);
-
-        this.initMainWindowLayout();
-        this.initMainMenu();
-
-        this.appInstance.addEventListener('lastWindowClosed', () => {
-            this.onAppExit();
-        });
-
-        // TODO: Implement Hotkeys
-        // this.win.addEventListener(WidgetEventTypes.KeyRelease, (event) => {
-        //     const keyReleaseEvent = new QKeySequence(event.key);
-        // })
-
-        // Window Events
-        this.win.addEventListener(WidgetEventTypes.Close, () => { });
-        this.win.addEventListener(WidgetEventTypes.Hide, () => { });
-        this.win.addEventListener(WidgetEventTypes.Show, () => { });
-        this.win.addEventListener(WidgetEventTypes.Resize, () => { });
-        this.win.addEventListener(WidgetEventTypes.Move, () => { });
-    }
-
-    public initMainMenu() {
-        // File Menu
-        const fileMenu = new QMenu();
-        fileMenu.setTitle('File');
-
-        fileMenu.addSeparator(); // Add a separator between actions
-
-        const quitAction = new QAction();
-        quitAction.setText('Quit');
-        quitAction.addEventListener('triggered', () => this.appInstance.exit(0));
-        fileMenu.addAction(quitAction);
-
-        // Help menu
-        const helpMenu = new QMenu();
-        helpMenu.setTitle('Help');
-
-        const aboutAction = new QAction();
-        aboutAction.setText('About');
-        aboutAction.addEventListener('triggered', () => new AboutDialogExample());
-        helpMenu.addAction(aboutAction);
-        
-        // Add menus to menubar
-        this.menuBar.addMenu(fileMenu);
-        this.menuBar.addMenu(helpMenu);        
-
-        this.win.setMenuBar(this.menuBar);
-    }
-
-    /**
-     * Initializes the layout of the main application window by setting up the central widget, 
-     * configuring layout elements such as labels and buttons, and assigning them to the window's layout.
-     * This method arranges widgets and sets the central widget for the main window.
-     */
-    // TODO: Cleanup as Views, add to view/MainWindow.ts #25
-    public initMainWindowLayout = () => {
-
-        this.centralWidget.setObjectName("centralWidget");
-        this.centralWidget.setLayout(this.rootLayout);
-
-        const label = new QLabel();
-        label.setObjectName('label1');
-        label.setText('Application Name');
-
-        const button = new QPushButton();
-        button.setIcon(this.resources.getIcon('mainButtonIcon'));
-
-        const label2 = new QLabel();
-        label.setObjectName('label2');
-        label2.setText('<put something here>');
-
-       
-        // Build the root widget
-        this.rootLayout.addWidget(label);
-        this.rootLayout.addWidget(label2);
-        this.rootLayout.addWidget(button);
-        this.win.setCentralWidget(this.centralWidget);
-
-        // (global as any).win = this.win; // To prevent win from being garbage collected. (May no longer be needed)
-        // (global as any).systemTray = this.tray; // To prevent system tray from being garbage collected. (May no longer be needed)
-    }
-
+    
     /**
      * Initializes application settings by retrieving configuration values and applying them.
      * This includes setting the application version, configuring the behavior when closing windows,
      * restoring the window's position and size to their previous states, and displaying the main window.
      */
-    // TODO: Cleanup by calling and setting up the available Views #25
     public initSettings = () => {
         this.version = this.config.getSetting('app-version');
 
@@ -331,20 +240,20 @@ class App {
 
         // Move the window to where it was closed last
         // # uiexperience
-        this.win.move(
+        this.mainWindow.view.move(
             <number>Number(this.config.getSetting('pos-x')),
             <number>Number(this.config.getSetting('pos-y'))
         )
 
         // Resize the window to what it was when it was closed last
         // # uiexperience
-        this.win.resize(
+        this.mainWindow.view.resize(
             <number>Number(this.config.getSetting('width')),
             <number>Number(this.config.getSetting('height'))
         );
 
         // Show the main window
-        this.win.show();
+        this.mainWindow.view.show();
     }
 
     /**
@@ -352,14 +261,9 @@ class App {
      * and applying application settings. It prepares the application for use and displays the main window.
      */
     public run = () => {
-        this.initResources();
-        // this.initViews(); // TODO: Add this during cleanup
-        this.initMainWindow(); // TODO: Move into the initViews method
 
         this.initTrayMenu(); // TODO: Move to AppTray Class constructor
 
-        // Apply settings to the application and show the main window
-        this.initSettings();
     }
 }
 
