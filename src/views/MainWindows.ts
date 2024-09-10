@@ -26,7 +26,6 @@ export class MainWindow extends View {
 
     constructor(resources: Resources, config: Config) {
         super();
-        this.initializeComponents(config);
         this.initWindowLayout(config);
         this.initMainMenu(config);
         this.initEventListeners(config);
@@ -176,17 +175,6 @@ export class MainWindow extends View {
         this.menuBar.addMenu(helpMenu);        
 
         this.view.setMenuBar(this.menuBar);
-    }
-
-    /**
-     * Initializes the main application window by setting its size, position, icon, title, and various event handlers.
-     * The window is centered on the screen and configured with a minimum size.
-     * Additionally, it sets up event listeners for window-related events and handles application exit.
-     */
-    protected initializeComponents = (config: Config) => {
-        // Initialize components
-        
-
     }
 
     protected processClickEvent(value: string, parentDialog: QWidget, button: QPushButton) {
