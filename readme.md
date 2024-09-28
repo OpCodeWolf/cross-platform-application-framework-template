@@ -1,28 +1,29 @@
-# NodeGUI Cross Platform Application Template
-This template is a basic cross platform application built on NodeGui in Typescript
+---
+
+---
+
+---
+# NOTE: This project has been put on PAUSE
+## To build a new Cross Platform Application Framework, due to legalese vagueness with library sub-licenses, namely Qt.
+---
+
+---
+
+---
+
+# Cross Platform Application Framework Template
+This template is a basic cross platform application built on CPAF (working name) in Typescript
 
 ## Installation
-```
+
+```sh
 npm install
 ```
 
 ### Debian
-QT is required to be installed along with the libxcb plugins
-Note: These need to be tested for minimum requirements. You may not need them all.
-https://packages.debian.org/bullseye/amd64/libxcb-util1/download
-To install all of the libxcb libraries:
-```sh
-sudo apt-get install libxcb-*
-```
-
-#### Using a custom Qt installation (Optional)
-
-Just set export `QT_INSTALL_DIR=<your qt path>`  For example it would look something like this export `QT_INSTALL_DIR=/usr/local/Qt-6.6.0`. Add this in your .zshrc or .bashrc so that you dont need to repeat this process again.
-The logs should say something like CustomQt detected at `<your qt path>`. Hence, skipping Mini Qt installation.
+TBD
 
 ## Development
-
-If you are using a custom Qt installation, you will need to add the QT_INSTALL_DIR export and then rm -rf node_modules and do npm install again.
 
 ```sh
 npm run dev
@@ -35,7 +36,6 @@ Bug Reports: I'm not currently accepting any Bug Fixes, until the initial projec
 
 
 ## Packaging
-Packaging will only package what is on the repository and you must be connected to the internet.
 To package the project run the command:
 ```sh
 npm run package
